@@ -4,7 +4,7 @@ import numpy as np
 
 data = keras.datasets.imdb
 
-(train_data, train_lables), (test_data, test_labels) = data.load_data(num_words=10000)
+(train_data, train_lables), (test_data, test_labels) = data.load_data(num_words=88000)
 
 word_index = data.get_word_index()
 
@@ -29,3 +29,24 @@ model.add(keras.layers.Dense(16, activation="relu"))
 model.add(keras.layers.Dense(1, activation="sigmoid"))
 
 model.summary()
+
+model.compile(optimizer = "adam", loss="binary_crossentropy", metrics=["accuracy"])
+
+x_val = train_data[:10000]
+x_train = train_data[10000:]
+
+y_val = train_lables[:10000]
+y_train = train_lables[10000:]
+
+fitmodel = model.fit(x_train, y_train, epochs=40, batch_size=512, validation_data=(x_val, y_val), verbose=1)
+results = model.evaluate(test_data, test_labels)
+
+print(results)
+
+test_review = test_data[0]
+predict = model.predict([test_review])
+print("Review: ")
+print(decode_review(test_review))
+print("Prediction: " + str(predict[0]))
+print("Actual: " + str(test_labels[0]))
+print(results)
